@@ -85,12 +85,12 @@ const FiltersModal = ({modalRef, filters, setFilters, onClose, onApply, onReset}
             Object.keys(sections).map((sectionName, index: number) => {
                 let sectionView = sections[sectionName];
                 let title = capitalize(sectionName);
-                const sectionData = filters[sectionName]
+                const sectionData = FilterItems[sectionName]
   
                 return (
                 <Animated.View 
                  entering={FadeInDown.delay((index * 100) + 100).springify().damping(11)}
-                key={index}>
+                    key={index}>
                     <SectionView 
                      title={title}
                      content={sectionView({
@@ -115,7 +115,7 @@ const FiltersModal = ({modalRef, filters, setFilters, onClose, onApply, onReset}
                 <Text style={[styles.buttonText, { color: theme.colors.neutral(0.9)}]}>Reset</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
             activeOpacity={0.7} 
             onPress={onApply} 
             style={styles.applyButton}

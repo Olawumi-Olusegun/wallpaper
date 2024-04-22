@@ -31,10 +31,12 @@ const HomeScreen = () => {
     const [searchInput, setSearchInput] = useState("");
     const [images, setImages] = useState([]);
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
-    const [filters, setFilters] = useState<{[key: string]: any} | null>(null);
+    const [filters, setFilters] = useState<{[key: string]: any}>({});
     const searchInputRef = useRef<TextInput | null>(null)
     const scrollRef = useRef<ScrollView | null>(null)
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+
 
     const router = useRouter();
 
@@ -72,7 +74,7 @@ const HomeScreen = () => {
             };
 
             setImages([]);
-            setFilters(null);
+            setFilters({});
           
             if(activeCategory) {
                 paramItem.params.category = activeCategory;
@@ -87,7 +89,7 @@ const HomeScreen = () => {
 
         }
             
-        setFilters(null)
+        setFilters({})
         handleCloseModalPress();
     }
 
@@ -110,7 +112,9 @@ const HomeScreen = () => {
         fetchImages(paramItem)
     }
 
-    const fetchImages = async ({ params, append = true }: FetchParams) => {
+    const fetchImages = async ({ params, append = false }: FetchParams) => {
+
+        // console.log({ params })
 
         if(params.q == "") {
             delete params.q;
@@ -118,7 +122,9 @@ const HomeScreen = () => {
 
         try {
             let response = await fetchWallpaperImages({ params });
+           
             if(response.success && response.data?.hits) {
+                // console.log({ data: response.data?.hits })
                 if(append) {
                     setImages([...images, ...response.data?.hits as []])
                 } else {
@@ -244,11 +250,11 @@ const HomeScreen = () => {
       </Pressable>
     </View>
 
-    <ScrollView 
-    onScroll={handleScroll}
-    scrollEventThrottle={5}
+    <ScrollView
+    // onScroll={handleScroll}
+    // scrollEventThrottle={5}
     ref={scrollRef}
-    contentContainerStyle={{ gap: 15 }}>
+    contentContainerStyle={{ gap: 15, }}>
         <View style={styles.searchBar}>
             <View style={styles.searchIcon}>
                 <Feather name='search' size={24} color={theme.colors.neutral(0.4)} />
@@ -277,45 +283,45 @@ const HomeScreen = () => {
         </View>
 
             {
-            filters &&  (
-                <View>
-                    <ScrollView 
-                     showsHorizontalScrollIndicator={false}
-                     horizontal
-                     contentContainerStyle={styles.filters}
-                    >
-                        {
-                            Object.keys(filters as {[key: string]: any}).map((key, index) => {
-                                return (
-                                    <View key={index} style={styles.filterItem}>
-                                        {
-                                            key === "clors" 
-                                            ? ( <View style={{ height: 20, width: 30, borderRadius: 7, backgroundColor: filters[key] }}>
-                                                </View>)
-                                                : (
+                filters &&  (
+                    <View style={{flexGrow: 1,  backgroundColor: "red"}}>
+                        <ScrollView 
+                        showsHorizontalScrollIndicator={false}
+                        horizontal
+                        contentContainerStyle={styles.filters}
+                        >
+                            {
+                                Object.keys(filters as {[key: string]: any}).map((key, index) => {
+                                    return (
+                                        <View key={index} style={styles.filterItem}>
+                                            {
+                                                key === "clors" 
+                                                ? ( <View style={{ height: 20, width: 30, borderRadius: 7, backgroundColor: filters[key] }}>
+                                                    </View>)
+                                                    : (
 
-                                                    <Text style={styles.filterItemText}>{filters[key]}</Text>
-                                                )
-                                            
-                                        }
-                                        <TouchableOpacity 
-                                        activeOpacity={0.7} 
-                                        onPress={() => clearThisFilter(key)}
-                                        style={styles.filterClose}
-                                        >
-                                         <Ionicons name='close' size={14} color={theme.colors.neutral(0.9)} />
-                                        </TouchableOpacity>
-                                    </View>
-                                )
-                            } )
-                        }
-                    </ScrollView>
-                </View>
-            )
+                                                        <Text style={styles.filterItemText}>{filters[key]}</Text>
+                                                    )
+                                                
+                                            }
+                                            <TouchableOpacity 
+                                            activeOpacity={0.7} 
+                                            onPress={() => clearThisFilter(key)}
+                                            style={styles.filterClose}
+                                            >
+                                            <Ionicons name='close' size={14} color={theme.colors.neutral(0.9)} />
+                                            </TouchableOpacity>
+                                        </View>
+                                    )
+                                } )
+                            }
+                        </ScrollView>
+                    </View>
+                )
                 
             }
 
-        <View>
+        <View style={{ flex: 1, flexGrow: 1 }}>
             {images.length > 0 &&  <ImageGrid images={images} router={router} />}
         </View>
 
@@ -325,6 +331,8 @@ const HomeScreen = () => {
 
 
     </ScrollView>
+
+
     <FiltersModal 
     modalRef={bottomSheetModalRef}
     filters={filters}
@@ -332,8 +340,9 @@ const HomeScreen = () => {
     onClose={handleCloseModalPress}
     onApply={applyFilters}
     onReset={resetFilters}
-    
     />
+
+
     </SafeAreaView>
   )
 }
@@ -386,6 +395,7 @@ const styles = StyleSheet.create({
     },
     categories: {},
     filters: {
+        flex: 1,
         paddingHorizontal: wp(4),
         gap: 10,
     },

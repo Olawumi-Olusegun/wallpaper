@@ -15,11 +15,14 @@ const ImageScreen = () => {
     const router = useRouter();
     const [status, setStatus] = useState<"loading" | "downloading" | "sharing" | null>("loading");
     const item = useLocalSearchParams();
+    
 
     let uri = item?.webformatURL as string;
     const fileName = (item?.previewURL as string)?.split("/").pop();
     const imageUrl = uri;
     const filePath = `${FileSystem.documentDirectory}${fileName}`;
+
+
 
     const getSize = () => {
         const aspectRatio: number = (item?.imageWidth as any) / (item?.imageHeight as any);
@@ -109,6 +112,11 @@ const ImageScreen = () => {
         }
     }
 
+    const handleRouteGoBack = () => {
+        router.back();
+        // Alert.alert("Go back");
+    }
+
   return (
     <BlurView tint='dark' intensity={60} style={styles.container}>
       <View style={getSize()}>
@@ -125,16 +133,16 @@ const ImageScreen = () => {
         />
       </View>
       <Pressable onPress={ () => router.back() } style={styles.backButton}>
-        <Ionicons name="arrow-back" size={14} color="black" />
+        <Ionicons name="arrow-back" size={14} color="white" />
         <Text style={{ color: "white" }}>Back</Text>
       </Pressable>
       <View style={styles.buttons}>
 
-        <View>
+        <View style={styles.buttons}>
 
             <Animated.View entering={FadeInDown.springify()} >
                 <Pressable style={styles.button}>
-                    <Octicons name='x' size={24} color="white" onPress={() => router.back()} />
+                    <Octicons name='x' size={24} color="white" onPress={handleRouteGoBack} />
                 </Pressable>
             </Animated.View>
 
@@ -180,7 +188,7 @@ const ImageScreen = () => {
         </View>
       </View>
 
-      <Toast config={toastConfig} visibilityTime={2500} />
+      {/* <Toast config={toastConfig} visibilityTime={2500} /> */}
 
     </BlurView>
   )
@@ -198,12 +206,14 @@ const styles = StyleSheet.create({
     },
     backButton: {
         display: "flex",
+        flexDirection: "row",
         alignItems:"center",
         justifyContent: "center",
         padding: 5,
         borderRadius: 5,
         borderCurve: "circular",
-        gap: 3,
+        gap: 6,
+        backgroundColor: "rgba(0,0,0,0.4)",
     },
     image: {
         borderRadius: theme.radius.lg,
@@ -220,18 +230,24 @@ const styles = StyleSheet.create({
     },
     buttons: {
         marginTop: 14,
+        display: "flex",
         flexDirection: "row",
         alignItems: "center",
+        justifyContent: "center",
         gap: 50,
+        width: "100%"
     },
     button: {
-        height: hp(6),
-        width: wp(6),
+        // height: hp(6),
+        height: 50,
+        // width: wp(6),
+        width: 50,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "rgba(255,255,255,0.2)",
         borderRadius: theme.radius.lg,
-        borderCurve: "continuous"
+        borderCurve: "continuous",
+
     },
     toast: {
         padding: 15,

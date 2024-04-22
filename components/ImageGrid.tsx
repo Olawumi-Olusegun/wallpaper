@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     container: {
         minHeight: 3,
         width: wp(100),
+        flex: 1
     },
     listContainerStyle: {
         paddingHorizontal: wp(4),

@@ -13,6 +13,7 @@ interface ImageCardProps {
 }
 
 const ImageCard = ({ item, index, columns, router }: ImageCardProps) => {
+
     
     const getImageHeight = () => {
         let { imageHeight: height, imageWidth: width } = item;
